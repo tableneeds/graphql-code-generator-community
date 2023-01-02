@@ -84,7 +84,7 @@ export class ReactApolloVisitor extends ClientSideBaseVisitor<ReactApolloRawPlug
       defaultBaseOptions: getConfigValue(rawConfig.defaultBaseOptions, {}),
       gqlImport: getConfigValue(
         rawConfig.gqlImport,
-        rawConfig.reactApolloVersion === 2 ? null : `${APOLLO_CLIENT_3_UNIFIED_PACKAGE}#gql`
+        rawConfig.reactApolloVersion === 2 ? undefined : `${APOLLO_CLIENT_3_UNIFIED_PACKAGE}#gql`
       ),
       hooksSuffix: getConfigValue(rawConfig.hooksSuffix, ''),
     });
@@ -343,6 +343,8 @@ export class ReactApolloVisitor extends ClientSideBaseVisitor<ReactApolloRawPlug
     operationVariablesTypes: string,
     hasRequiredVariables: boolean
   ): string {
+    operationResultType = operationType === 'Subscription' ? `Partial<${operationResultType}>` : operationResultType;
+
     const nodeName = node.name?.value ?? '';
     const suffix = this._getHookSuffix(nodeName, operationType);
     const operationName: string =
